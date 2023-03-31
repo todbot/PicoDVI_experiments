@@ -89,7 +89,7 @@ void do_video() {
   int circler = 15 + (sin(millis()/5700.0)) * 2 + 40*(butval/100.0);  
 
   // distance between balls
-  ball_mod = 15.0 * (0.5+sin(millis()/1000.0));
+  ball_mod = 25.0 * (0.5+sin(millis()/1000.0)); // 0.5 = allow ball_mod to go a litle negative
   int spacingr = 25 + ball_mod*5;
   
   // center point of screen 
