@@ -15,21 +15,21 @@ inline void RGB565toRGB(uint8_t* r, uint8_t* g, uint8_t* b, uint16_t color565) {
 }
 
 // "dim" entire display buffer by amount 'n'
-// handling RGB color dimming correctly
+// handling RGB color correctly 
 void dim_buf16(DVIGFX16* disp, int n) {
   uint16_t* buf = disp->getBuffer();
   uint8_t r,g,b;
   for( int i=0; i< dw*dh; i++) {
      RGB565toRGB(&r,&g,&b, buf[i]);
      r = max(r-n,0);
-     g = max(g-n,0);
+     g = max(g-(n*2),0); // green has twice the resolution of red & blue
      b = max(b-n,0);
      buf[i] = RGBtoRGB565(r,g,b);
   }
 }
 
 // "dim" entire buffer by amount n,
-// (but it's palette so does palette shift)
+// (but it's palette so does gradient)
 void dim_buf8(DVIGFX8* disp, int n) {
   uint8_t* buf = disp->getBuffer();
   for( int i=0; i< dw*dh; i++) {
@@ -37,10 +37,11 @@ void dim_buf8(DVIGFX8* disp, int n) {
   }
 }
 
+
 // make rainbow palette
 void make_rainbow_palette(DVIGFX8* disp) {
   uint8_t r,g,b;
-  for( int i=1; i<254; i++) {
+  for( int i=1; i<254; i++) {     
     hsbtorgb(&r, &g, &b,  i, 255,255);
     Serial.printf("i:%d %3d %3d %3d\n", i, r,g,b);
     disp->setColor(i, r,g,b);
@@ -50,16 +51,16 @@ void make_rainbow_palette(DVIGFX8* disp) {
 }
 
 // make the "websafe colors" palette
-void make_websafe_palette(DVIGFX8* disp) {
+void make_websafe_palette(DVIGFX8* disp) { 
   uint8_t i=0;
-  for( int r=0; r<16; r+=3 )
-    for( int g=0; g<16; g+=3 )
-      for( int b=0; b<16; b+=3 )
-        disp->setColor(i++, r*16, g*16, b*16);
+  for( int r=0; r<16; r+=3 ) 
+    for( int g=0; g<16; g+=3 )  
+      for( int b=0; b<16; b+=3 ) 
+        disp->setColor(i++, r*16, g*16, b*16);     
 }
 
-// make R,G,B to black gradient palette
-void make_rgb_palette(DVIGFX8* disp) {
+// make R,G,B gradient palette
+void make_rgb_palette(DVIGFX8* disp) { 
   uint8_t i=0;
   for(int r=0; r<64; r++) { disp->setColor(i++, r*4, 0,0);  }
   for(int g=0; g<64; g++) { disp->setColor(i++, 0, g*4, 0); }
@@ -69,13 +70,13 @@ void make_rgb_palette(DVIGFX8* disp) {
 
 // make a N-color gradient to black palette, with a N equally-spaced colors
 // based off of a starting hue
-void make_random_ncolor_palette(DVIGFX8* disp, uint8_t hue_start, int num_colors) {
+void make_random_ncolor_palette(DVIGFX8* disp, uint8_t hue_start, int num_colors) { 
   uint8_t dh = 256 / num_colors; // == 64 for 4 colors
   uint8_t i=0;
   uint8_t r,g,b;
   for( int j = 0; j < num_colors; j++) {
     uint8_t h = hue_start + j*dh;  // space equally around colorwheel
-    for( int k=0; k < dh; k++) {
+    for( int k=0; k < dh; k++) { 
       hsbtorgb(&r, &g, &b,  h, 255, k*num_colors);
       disp->setColor(i++, r,g,b);
     }
@@ -93,7 +94,7 @@ void hsbtorgb( uint8_t* r, uint8_t* g, uint8_t* b,  uint8_t h, uint8_t s, uint8_
         *r = *g = *b = v;
         return;
     }
-
+    
     region = h / 43;      // make hue 0-5
     fpart = (h - (region * 43)) * 6; // find remainder part, make it from 0-255
 

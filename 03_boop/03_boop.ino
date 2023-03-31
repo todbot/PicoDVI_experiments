@@ -1,18 +1,10 @@
-// PicoDVI circle_wub_16bit
+// PicoDVI 03_boop
 // 30 Mar 2023 - @todbot / Tod Kurt
 // based on https://github.com/adafruit/PicoDVI/blob/master/examples/16bit_hello/16bit_hello.ino
 //
-// Creates a spinning set of colored balls you can influence. 
-// 
-// Inputs:
-// - analog A0 -- distance between center of screen
-// - analog A1 -- color saturation of balls
-// - analog A2 -- number of balls from 2 - 17
-// - digital 24 -- size of balls (hold button to smoothly transform)
-//
+// Creates a colorful iris effect, based on 02_circle_wub
 
 #include <PicoDVI.h>                  // Core display & graphics library
-//#include <Adafruit_seesaw.h> // can't seem to get seesaw to work, hangs
 
 DVIGFX16 display(DVI_RES_320x240p60, adafruit_feather_dvi_cfg);
 
@@ -24,7 +16,7 @@ const int but_pin = 24;
 int16_t dw,dh;
 uint32_t last_millis = 0;
 
-int num_balls = 5;
+int num_balls = 50;
 int curr_ball = 0;
 
 uint8_t r,g,b; 
@@ -67,9 +59,9 @@ void read_inputs() {
     potA = ease * potA + (1-ease) * a;
     potB = ease * potB + (1-ease) * b;
     potC = ease * potC + (1-ease) * c;
-    ball_mod = 30 *  (potA / 1024.0);
+    //ball_mod = 30 *  (potA / 1024.0);
     sat = 255 * (potB / 1024.0);
-    num_balls = 2 + 15 * (potC/1024.0);
+    //num_balls = 2 + 15 * (potC/1024.0);
     
     if( but == LOW ) { // pressed
       butval += butval_inc;
@@ -97,13 +89,14 @@ void do_video() {
   int circler = 15 + (sin(millis()/5700.0)) * 2 + 40*(butval/100.0);  
 
   // distance between balls
+  ball_mod = 15.0 * (0.5+sin(millis()/1000.0));
   int spacingr = 25 + ball_mod*5;
   
   // center point of screen 
   float cx = (dw/2); 
   float cy = (dh/2); 
 
-  float ball_speed = 700 ;
+  float ball_speed = 1700;
   // position of this ball from center point
   float bx = sin(millis()/ball_speed + curr_ball*(6.28/num_balls) ) * spacingr;
   float by = cos(millis()/ball_speed + curr_ball*(6.28/num_balls) ) * spacingr;
