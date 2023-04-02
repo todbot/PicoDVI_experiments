@@ -27,7 +27,7 @@ uint32_t last_millis_hue;
 uint32_t last_millis_midi;
 
 // for note-stealing algorithm in noteOn()
-const uint8_t notes_cnt = 6; //shapes_cnt; // FIXME: match shapes_cnt
+const uint8_t notes_cnt = 8; //shapes_cnt; // FIXME: match shapes_cnt
 uint8_t notes_on[notes_cnt];
 uint32_t notes_millis[notes_cnt];
 
@@ -94,7 +94,6 @@ void handleNoteOn(byte channel, byte note, byte vel) {
     notes_millis[oldest_note] = millis();
     shapes_shape_on(oldest_note, note, vel, 1.001); // slow increase in size
   }
-  
 }
 
 //
@@ -110,6 +109,14 @@ void handleNoteOff(byte channel, byte note, byte vel) {
   }
 }
 
+void handleControlChange(byte channel, byte cc_num, byte cc_val ) {
+//  Serial.printf("handleControlChange! ccnum:%d val:%d\n", cc_num, cc_val);
+  if( cc_num == 1 ) { // mod wheel
+    shapes_set_pvmod( 0.1 + (cc_val/127.0) );
+  }
+}
+
+uint32_t draw_millis = 0;
 //
 void do_video() {
   // fade last frame
@@ -124,13 +131,16 @@ void do_video() {
   // attract mode and auto hue shift
   if( millis() - last_millis_hue > 100 ) { 
     last_millis_hue = millis();
+    Serial.println(draw_millis);
     // attract mode if no MIDI
     if( millis() - last_millis_midi > millis_until_attract_mode ) { 
       shapes_attract();
     }
   }
 
+  uint32_t t = millis();
   shapes_draw(&display);
+  draw_millis = millis() - t;
   
 }
 
@@ -139,7 +149,7 @@ void handleMIDIusb() {
   while( MIDIusb.read() ) {  // use while() to read all pending MIDI, shouldn't hang
     switch(MIDIusb.getType()) {
       case midi::ControlChange:
-        //handleControlChange(0, MIDIusb.getData1(), MIDIusb.getData2());
+        handleControlChange(0, MIDIusb.getData1(), MIDIusb.getData2());
         break;
       case midi::NoteOn:
         handleNoteOn( 0, MIDIusb.getData1(),MIDIusb.getData2());
@@ -158,7 +168,7 @@ void handleMIDIserial() {
   while( MIDIserial.read() ) {  // use while() to read all pending MIDI, shouldn't hang
     switch(MIDIserial.getType()) {
       case midi::ControlChange:
-        //handleControlChange(0, MIDIserial.getData1(), MIDIserial.getData2());
+        handleControlChange(0, MIDIserial.getData1(), MIDIserial.getData2());
         break;
       case midi::NoteOn:
         handleNoteOn( 0, MIDIserial.getData1(),MIDIserial.getData2());
