@@ -24,15 +24,12 @@ MIDI_CREATE_INSTANCE(Adafruit_USBD_MIDI, usb_midi, MIDIusb); // USB MIDI
 MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDIserial);   // Serial MIDI
 
 int fade_amount = 8; // how fast previous frame fades away, higher = faster fade
-const uint32_t millis_until_attract_mode = 10 * 1000;
 
 const int midi_tx_pin = 0;  // MIDI Feather Wing
 const int midi_rx_pin = 1;  
 
 int16_t dw,dh;
 uint32_t last_millis;
-uint32_t last_millis_hue;
-uint32_t last_millis_midi;
 uint32_t draw_millis = 0;
 
 const int shapes_cnt = 5;
@@ -112,16 +109,6 @@ void do_video() {
     shapes_update(shapes, shapes_cnt);
   }
   
-  // attract mode and auto hue shift
-  if( millis() - last_millis_hue > 100 ) { 
-    last_millis_hue = millis();
-    Serial.println(draw_millis);
-//    // attract mode if no MIDI
-//    if( millis() - last_millis_midi > millis_until_attract_mode ) { 
-//      shapes_attract();
-//    }
-  }
-
   uint32_t t = millis();
   
   shapes_draw(&display, shapes, shapes_cnt);

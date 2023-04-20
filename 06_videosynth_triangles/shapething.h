@@ -41,7 +41,7 @@ void shapes_update(ShapeThing shapes[], const int shapes_cnt) {
   }
 }
 
-//// draw all the shapes
+// draw all the shapes
 void shapes_draw(DVIGFX16* disp, ShapeThing shapes[], const int shapes_cnt) {
   uint8_t r,g,b; // holders for hsbtorgb conversion
   
@@ -65,22 +65,5 @@ void shapes_draw(DVIGFX16* disp, ShapeThing shapes[], const int shapes_cnt) {
   } // for shape
   
 }
-//
-////// attract mode
-////void shapes_attract() {
-////  float decays[] = { 0.996, 1.01, 0.93, 1.005 };
-////  for( int i=0; i< shapes_cnt; i++) { 
-////    shapes[i].hue++;
-////    // make a new shape if old one gone
-////    if( shapes[i].r0 < 0.2 || shapes[i].r0 > 1.5 ) {
-////      shapes_shape_on(i, random(20,80), random(127,255), decays[ random(4) ] );
-////    }    
-////  }
-////}
-//
-//
-//void shapes_print(int i) { 
-////  Serial.printf("%d: r0_decay:%1.2f\n", i, shapes[i].r0_decay);
-//}
 
 #endif
