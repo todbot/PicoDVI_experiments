@@ -1,3 +1,5 @@
+#ifndef SHAPETHING_H
+#define SHAPETHING_H
 
 #include "picodvi_utils.h"
 
@@ -11,6 +13,7 @@ typedef struct ShapeThingStruct {
     float ang; // angle of first point on circle
     float vrad; // how radius changes
     float vang; // how angle changes
+    bool visible;
 } ShapeThing;
 
 // initialize shapes
@@ -25,6 +28,7 @@ void shapes_init(ShapeThing shapes[], const int shapes_cnt, const int cx, const 
     shapes[i].ang = 0;
     shapes[i].vrad = 0;
     shapes[i].vang = 0.01;
+    shapes[i].visible = false;
   }
 }
 
@@ -44,7 +48,7 @@ void shapes_draw(DVIGFX16* disp, ShapeThing shapes[], const int shapes_cnt) {
   //float f = millis() / 1000.0; // a sort of float framecount
 
   for( int i=0; i< shapes_cnt; i++ ) {
-   
+    if( !shapes[i].visible ) continue;
     float cx  = shapes[i].cx;
     float cy  = shapes[i].cy;
     float rad = shapes[i].rad;
@@ -78,3 +82,5 @@ void shapes_draw(DVIGFX16* disp, ShapeThing shapes[], const int shapes_cnt) {
 //void shapes_print(int i) { 
 ////  Serial.printf("%d: r0_decay:%1.2f\n", i, shapes[i].r0_decay);
 //}
+
+#endif

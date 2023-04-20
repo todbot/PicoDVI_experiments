@@ -5,6 +5,9 @@
 // 
 // Must set:  Tools / USB Stack -> "Adafruit TinyUSB"
 // 
+// The original study for this is:
+//  https://editor.p5js.org/todbot/sketches/DFLFuPYJC
+// 
 
 #include <PicoDVI.h> 
 #include <Adafruit_TinyUSB.h>
@@ -32,7 +35,7 @@ uint32_t last_millis_hue;
 uint32_t last_millis_midi;
 uint32_t draw_millis = 0;
 
-const int shapes_cnt = 1;
+const int shapes_cnt = 5;
 ShapeThing shapes[shapes_cnt];
 
 
@@ -46,6 +49,15 @@ void setup() {
   dh = display.height();
 
   shapes_init(shapes, shapes_cnt, dw/2, dh/2);
+  shapes[0].visible = true;
+  for( int i=1; i<shapes_cnt; i++) { 
+    shapes[i].cy = random(20,220);
+    shapes[i].cx = random(20,300);
+    shapes[i].rad = random(20,50);
+    shapes[i].hue = random(0,255);
+    shapes[i].sat = random(120,255);
+    shapes[i].vang = 0.001 * random(1, 50);
+  }
   
   Serial1.setRX(midi_rx_pin);
   Serial1.setTX(midi_tx_pin);
@@ -68,14 +80,19 @@ void loop() {
 void handleControlChange(byte channel, byte cc_num, byte cc_val ) {
   Serial.printf("ccnum:%d val:%d\n", cc_num, cc_val);
   if( cc_num == 34 ) { // 8mu fader1
-    for( int i=0; i<shapes_cnt; i++) {
-      shapes[i].hue = cc_val*2;
-    }
+    shapes[0].hue = cc_val*2;
   }
   else if( cc_num == 35 ) { 
-    for( int i=0; i<shapes_cnt; i++) {
-      shapes[i].cx = 10 + cc_val*2;
-    }    
+    shapes[0].cx = 10 + cc_val*2;
+  }
+  else if( cc_num == 40 ) { 
+    int cnt = (shapes_cnt * cc_val)/127;
+    for( int i=1; i<shapes_cnt; i++) { 
+      shapes[i].visible = false; 
+    }
+    for(int i=1; i< cnt; i++) { 
+      shapes[i].visible = true;
+    }
   }
   else if( cc_num == 41 ) { // 8mu fader8
     for( int i=0; i<shapes_cnt; i++) {
