@@ -115,9 +115,9 @@ void handleControlChange(byte channel, byte cc_num, byte cc_val ) {
   else if( cc_num == 35 ) {
     shapes[0].cr = 10 + cc_val/2;
   }
-  else if( cc_num == 36 ) {
-    shapes[0].cx = 30 + cc_val*3;
-  }
+  /* else if( cc_num == 36 ) { */  // too distracting
+  /*   shapes[0].cx = 30 + cc_val*3; */
+  /* } */
   else if( cc_num == 37 ) {
     fade_millis = cc_val*2 + 1; // map( cc_val, 0,127, 1, 100);  // fade amount
   }
