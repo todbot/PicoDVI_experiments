@@ -1,12 +1,12 @@
-// PicoDVI 06_videosynth_triangles
+// PicoDVI 06_videosynth_triangles -- experiments with longer persistence
 // 18 Apr 2023 - @todbot / Tod Kurt
 //
 // Uses MIDI CC controls CC 36 to CC 41 (like the 8mu controller)
 //
 // Must set:  Tools / USB Stack -> "Adafruit TinyUSB"
 //
-// The original study for this is:
-//  https://editor.p5js.org/todbot/sketches/DFLFuPYJC
+// The study for this in p5js is:
+//   https://openprocessing.org/sketch/1906251
 //
 
 #include <PicoDVI.h>
