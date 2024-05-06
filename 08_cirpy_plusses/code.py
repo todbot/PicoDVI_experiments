@@ -18,7 +18,7 @@ wcnt, hcnt = 32, 24  # if we're actually 320x240, this gives us 10 pixel spacing
 for i in range(wcnt):
     for j in range(hcnt):
         x,y = 5 + i * 10, 5 + j * 10  # 10 pixel spacing
-        c = vectorio.Circle(pixel_shader=pal, color_index=(i%2), radius=1, x=x, y=y)
+        c = vectorio.Circle(pixel_shader=pal, color_index=(i%2), radius=5, x=x, y=y)
         maingroup.append(c)
 
 while True:
